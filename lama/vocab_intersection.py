@@ -9,9 +9,20 @@ from tqdm import tqdm
 import argparse
 import spacy
 import lama.modules.base_connector as base
+from pdb import set_trace as bp
 
 
 CASED_MODELS = [
+  {
+        "lm": "roberta",
+        "task": "language_modeling",
+        "label": "roberta_base", # mp0.15
+        "models_names": ["roberta"],
+        "roberta_model_name": "checkpoint_52_500000.pt",
+        "roberta_vocab_name": "dict.txt",
+        "roberta_model_dir": "pre-trained_language_models/roberta.base.faststatsync.me_fp16.cmpltsents.mp0.15.roberta_base.tps512.adam.fp16adam.b2_0.98.eps1e-06.cl0.0.lr0.0006.wu24000.dr0.1.atdr0.1.wd0.01.ms32.uf4.mu500000.s1.ngpu64",
+        "max_sentence_length": 512,
+    },
   # {
   #   # "FAIRSEQ WIKI103"
   #   "lm": "fairseq",
@@ -21,66 +32,66 @@ CASED_MODELS = [
   #   "cpu": True,
   #   "output_dictionary_size": -1
   # },
-  {
-    # "TransformerXL"
-    "lm": "transformerxl",
-    "transformerxl_model_dir": "pre-trained_language_models/transformerxl/transfo-xl-wt103/",
-  },
-  {
-    # "ELMO ORIGINAL"
-    "lm": "elmo",
-    "elmo_model_dir": "pre-trained_language_models/elmo/original",
-    "elmo_model_name": "elmo_2x4096_512_2048cnn_2xhighway",
-    "elmo_vocab_name": "vocab-2016-09-10.txt",
-    "elmo_warm_up_cycles": 5
-  },
-  {
-    # "ELMO ORIGINAL 5.5B"
-    "lm": "elmo",
-    "elmo_model_dir": "pre-trained_language_models/elmo/original5.5B/",
-    "elmo_model_name": "elmo_2x4096_512_2048cnn_2xhighway_5.5B",
-    "elmo_vocab_name": "vocab-enwiki-news-500000.txt",
-    "elmo_warm_up_cycles": 5
-  },
-  {
-    # "BERT BASE CASED"
-    "lm": "bert",
-    "bert_model_name": "bert-base-cased",
-    "bert_model_dir": "pre-trained_language_models/bert/cased_L-12_H-768_A-12/",
-    "bert_vocab_name": "vocab.txt"
-  },
-  {
-    # "BERT LARGE CASED"
-    "lm" : "bert",
-    "bert_model_name": "bert-large-cased",
-    "bert_model_dir": "pre-trained_language_models/bert/cased_L-24_H-1024_A-16/",
-    "bert_vocab_name": "vocab.txt"
-  }
+  # {
+  #   # "TransformerXL"
+  #   "lm": "transformerxl",
+  #   "transformerxl_model_dir": "pre-trained_language_models/transformerxl/transfo-xl-wt103/",
+  # },
+  # {
+  #   # "ELMO ORIGINAL"
+  #   "lm": "elmo",
+  #   "elmo_model_dir": "pre-trained_language_models/elmo/original",
+  #   "elmo_model_name": "elmo_2x4096_512_2048cnn_2xhighway",
+  #   "elmo_vocab_name": "vocab-2016-09-10.txt",
+  #   "elmo_warm_up_cycles": 5
+  # },
+  # {
+  #   # "ELMO ORIGINAL 5.5B"
+  #   "lm": "elmo",
+  #   "elmo_model_dir": "pre-trained_language_models/elmo/original5.5B/",
+  #   "elmo_model_name": "elmo_2x4096_512_2048cnn_2xhighway_5.5B",
+  #   "elmo_vocab_name": "vocab-enwiki-news-500000.txt",
+  #   "elmo_warm_up_cycles": 5
+  # },
+  # {
+  #   # "BERT BASE CASED"
+  #   "lm": "bert",
+  #   "bert_model_name": "bert-base-cased",
+  #   "bert_model_dir": "pre-trained_language_models/bert/cased_L-12_H-768_A-12/",
+  #   "bert_vocab_name": "vocab.txt"
+  # },
+  # {
+  #   # "BERT LARGE CASED"
+  #   "lm" : "bert",
+  #   "bert_model_name": "bert-large-cased",
+  #   "bert_model_dir": "pre-trained_language_models/bert/cased_L-24_H-1024_A-16/",
+  #   "bert_vocab_name": "vocab.txt"
+  # }
 ]
 
 CASED_COMMON_VOCAB_FILENAME = "pre-trained_language_models/common_vocab_cased.txt"
 
 LOWERCASED_MODELS = [
- {
-   # "BERT BASE UNCASED"
-   "lm": "bert",
-   "bert_model_name": "bert-base-uncased",
-   "bert_model_dir": None,
-   "bert_vocab_name": "vocab.txt"
- },
- {
-   # "BERT LARGE UNCASED"
-   "lm": "bert",
-   "bert_model_name": "bert-large-uncased",
-   "bert_model_dir": None,
-   "bert_vocab_name": "vocab.txt"
- },
- {
-   # "OpenAI GPT"
-   "lm": "gpt",
-   "gpt_model_dir": None,
-   "gpt_model_name": "openai-gpt"
- }
+#  {
+#    # "BERT BASE UNCASED"
+#    "lm": "bert",
+#    "bert_model_name": "bert-base-uncased",
+#    "bert_model_dir": None,
+#    "bert_vocab_name": "vocab.txt"
+#  },
+#  {
+#    # "BERT LARGE UNCASED"
+#    "lm": "bert",
+#    "bert_model_name": "bert-large-uncased",
+#    "bert_model_dir": None,
+#    "bert_vocab_name": "vocab.txt"
+#  },
+#  {
+#    # "OpenAI GPT"
+#    "lm": "gpt",
+#    "gpt_model_dir": None,
+#    "gpt_model_name": "openai-gpt"
+#  }
 ]
 
 LOWERCASED_COMMON_VOCAB_FILENAME = "pre-trained_language_models/common_vocab_lowercased.txt"
@@ -124,6 +135,8 @@ def __vocab_intersection(models, filename):
         new_common_vocab = []
         for i in tqdm(range(len(common_vocab))):
             word = common_vocab[i]
+            if word == '':
+              continue
             doc = nlp(word)
             token = doc[0]
             if(len(doc) != 1):

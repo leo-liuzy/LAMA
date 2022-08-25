@@ -22,6 +22,7 @@ from multiprocessing.pool import ThreadPool
 import multiprocessing
 import lama.evaluation_metrics as metrics
 import time, sys
+from pdb import set_trace as bp
 
 
 def load_file(filename):
@@ -307,7 +308,7 @@ def main(args, shuffle_data=True, model=None):
     msg = ""
 
     [model_type_name] = args.models_names
-
+    # bp()
     print(model)
     if model is None:
         model = build_model_by_name(model_type_name, args)

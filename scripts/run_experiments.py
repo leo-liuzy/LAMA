@@ -15,46 +15,114 @@ import os
 from os.path import isfile, join
 from shutil import copyfile
 from collections import defaultdict
-
+from pdb import set_trace as bp
 LMs = [
+    # {
+    #     "lm": "transformerxl",
+    #     "label": "transformerxl",
+    #     "models_names": ["transformerxl"],
+    #     "transformerxl_model_name": "transfo-xl-wt103",
+    #     "transformerxl_model_dir": "pre-trained_language_models/transformerxl/transfo-xl-wt103/",
+    # },
+    # {
+    #     "lm": "elmo",
+    #     "label": "elmo",
+    #     "models_names": ["elmo"],
+    #     "elmo_model_name": "elmo_2x4096_512_2048cnn_2xhighway",
+    #     "elmo_vocab_name": "vocab-2016-09-10.txt",
+    #     "elmo_model_dir": "pre-trained_language_models/elmo/original",
+    #     "elmo_warm_up_cycles": 10,
+    # },
+    # {
+    #     "lm": "elmo",
+    #     "label": "elmo5B",
+    #     "models_names": ["elmo"],
+    #     "elmo_model_name": "elmo_2x4096_512_2048cnn_2xhighway_5.5B",
+    #     "elmo_vocab_name": "vocab-enwiki-news-500000.txt",
+    #     "elmo_model_dir": "pre-trained_language_models/elmo/original5.5B/",
+    #     "elmo_warm_up_cycles": 10,
+    # },
+    # {
+    #     "lm": "bert",
+    #     "label": "bert_base",
+    #     "models_names": ["bert"],
+    #     "bert_model_name": "bert-base-cased",
+    #     "bert_model_dir": "pre-trained_language_models/bert/cased_L-12_H-768_A-12",
+    # },
+    # {
+    #     "lm": "bert",
+    #     "label": "bert_large",
+    #     "models_names": ["bert"],
+    #     "bert_model_name": "bert-large-cased",
+    #     "bert_model_dir": "pre-trained_language_models/bert/cased_L-24_H-1024_A-16",
+    # },
+    # {
+    #     "lm": "roberta",
+    #     "label": "roberta_base_mp0.15", # mp0.15
+    #     "models_names": ["roberta"],
+    #     "roberta_model_name": "checkpoint_52_500000.pt",
+    #     "roberta_vocab_name": "dict.txt",
+    #     "roberta_model_dir": "pre-trained_language_models/roberta.base.faststatsync.me_fp16.cmpltsents.mp0.15.roberta_base.tps512.adam.fp16adam.b2_0.98.eps1e-06.cl0.0.lr0.0006.wu24000.dr0.1.atdr0.1.wd0.01.ms32.uf4.mu500000.s1.ngpu64",
+    #     "max_sentence_length": 512,
+    # },
+    
+    # {
+    #     "lm": "roberta",
+    #     "label": "roberta_base_mp0.4", # mp0.4
+    #     "models_names": ["roberta"],
+    #     "roberta_model_name": "checkpoint_52_500000.pt",
+    #     "roberta_vocab_name": "dict.txt",
+    #     "roberta_model_dir": "pre-trained_language_models/roberta.base.faststatsync.me_fp16.cmpltsents.mp0.4.roberta_base.tps512.adam.fp16adam.b2_0.98.eps1e-06.cl0.0.lr0.0006.wu24000.dr0.1.atdr0.1.wd0.01.ms32.uf4.mu500000.s1.ngpu64",
+    #     "max_sentence_length": 512,
+    # },
+    
+    # {
+    #     "lm": "roberta",
+    #     "label": "roberta_base_mp0.5", # mp0.5
+    #     "models_names": ["roberta"],
+    #     "roberta_model_name": "checkpoint_52_500000.pt",
+    #     "roberta_vocab_name": "dict.txt",
+    #     "roberta_model_dir": "pre-trained_language_models/roberta.base.faststatsync.me_fp16.cmpltsents.mp0.5.roberta_base.tps512.adam.fp16adam.b2_0.98.eps1e-06.cl0.0.lr0.0006.wu24000.dr0.1.atdr0.1.wd0.01.ms32.uf4.mu500000.s1.ngpu64",
+    #     "max_sentence_length": 512,
+    # },
+    
+    # {
+    #     "lm": "roberta",
+    #     "label": "roberta_base_seq-len_2-8", # seq-len[2-8]
+    #     "models_names": ["roberta"],
+    #     "roberta_model_name": "checkpoint_52_500000.pt",
+    #     "roberta_vocab_name": "dict.txt",
+    #     "roberta_model_dir": "pre-trained_language_models/roberta.base.faststatsync.me_fp16.cmpltsents.seq-len.slgeos.slb0.2-0.8.roberta_base.tps512.adam.fp16adam.b2_0.98.eps1e-06.cl0.0.lr0.0006.wu24000.dr0.1.atdr0.1.wd0.01.ms32.uf4.mu500000.s1.ngpu64",
+    #     "max_sentence_length": 512,
+    # },
+    
+    # {
+    #     "lm": "roberta",
+    #     "label": "roberta_base_seq-len_3-7", # seq-len[3-7]
+    #     "models_names": ["roberta"],
+    #     "roberta_model_name": "checkpoint_52_500000.pt",
+    #     "roberta_vocab_name": "dict.txt",
+    #     "roberta_model_dir": "pre-trained_language_models/roberta.base.faststatsync.me_fp16.cmpltsents.seq-len.slgeos.slb0.3-0.7.roberta_base.tps512.adam.fp16adam.b2_0.98.eps1e-06.cl0.0.lr0.0006.wu24000.dr0.1.atdr0.1.wd0.01.ms32.uf4.mu500000.s1.ngpu64",
+    #     "max_sentence_length": 512,
+    # },
+    
+    # {
+    #     "lm": "roberta",
+    #     "label": "roberta_base_mp0.09-0.21", # mp0.09-0.21
+    #     "models_names": ["roberta"],
+    #     "roberta_model_name": "checkpoint_54_500000.pt",
+    #     "roberta_vocab_name": "dict.txt",
+    #     "roberta_model_dir": "pre-trained_language_models/roberta.base.faststatsync.me_fp16.none.mpr0.09-0.21.roberta_base.tps512.adam.fp16adam.b2_0.98.eps1e-06.cl0.0.lr0.0006.wu24000.dr0.1.atdr0.1.wd0.01.ms32.uf2.mu500000.s1.ngpu128",
+    #     "max_sentence_length": 512,
+    # },
     {
-        "lm": "transformerxl",
-        "label": "transformerxl",
-        "models_names": ["transformerxl"],
-        "transformerxl_model_name": "transfo-xl-wt103",
-        "transformerxl_model_dir": "pre-trained_language_models/transformerxl/transfo-xl-wt103/",
-    },
-    {
-        "lm": "elmo",
-        "label": "elmo",
-        "models_names": ["elmo"],
-        "elmo_model_name": "elmo_2x4096_512_2048cnn_2xhighway",
-        "elmo_vocab_name": "vocab-2016-09-10.txt",
-        "elmo_model_dir": "pre-trained_language_models/elmo/original",
-        "elmo_warm_up_cycles": 10,
-    },
-    {
-        "lm": "elmo",
-        "label": "elmo5B",
-        "models_names": ["elmo"],
-        "elmo_model_name": "elmo_2x4096_512_2048cnn_2xhighway_5.5B",
-        "elmo_vocab_name": "vocab-enwiki-news-500000.txt",
-        "elmo_model_dir": "pre-trained_language_models/elmo/original5.5B/",
-        "elmo_warm_up_cycles": 10,
-    },
-    {
-        "lm": "bert",
-        "label": "bert_base",
-        "models_names": ["bert"],
-        "bert_model_name": "bert-base-cased",
-        "bert_model_dir": "pre-trained_language_models/bert/cased_L-12_H-768_A-12",
-    },
-    {
-        "lm": "bert",
-        "label": "bert_large",
-        "models_names": ["bert"],
-        "bert_model_name": "bert-large-cased",
-        "bert_model_dir": "pre-trained_language_models/bert/cased_L-24_H-1024_A-16",
+        "lm": "roberta",
+        "label": "roberta_base_mp0.2", # mp0.09-0.21
+        "models_names": ["roberta"],
+        "roberta_model_name": "checkpoint_52_500000.pt",
+        "roberta_vocab_name": "dict.txt",
+        "roberta_model_dir": "pre-trained_language_models/roberta.base.faststatsync.me_fp16.cmpltsents.mp0.2.roberta_base.tps512.adam.fp16adam.b2_0.98.eps1e-06.cl0.0.lr0.0006.wu24000.dr0.1.atdr0.1.wd0.01.ms32.uf2.mu500000.s1.ngpu128",
+        "max_sentence_length": 512,
     },
 ]
 
@@ -79,7 +147,11 @@ def run_experiments(
     type_Precision1 = defaultdict(list)
     type_count = defaultdict(list)
 
-    results_file = open("last_results.csv", "w+")
+    # results_file = open("last_results.csv", "w+")
+    dataset_name = data_path_pre.split("/")[-2]
+    os.makedirs(f"{dataset_name}/{input_param['label']}", exist_ok=True)
+    
+    results_file = open(f"{dataset_name}/{input_param['label']}/{input_param['roberta_model_name']}.last_results.csv", "w+")
 
     for relation in relations:
         pp.pprint(relation)
@@ -204,6 +276,7 @@ def get_Squad_parameters(data_path_pre="data/"):
 def run_all_LMs(parameters):
     for ip in LMs:
         print(ip["label"])
+        # bp()
         run_experiments(*parameters, input_param=ip, use_negated_probes=False)
 
 
